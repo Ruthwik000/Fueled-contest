@@ -483,9 +483,9 @@ Positions EVOL Jewels as India's most innovative jewelry retailer—the brand th
 ## 📞 Team Contact
 
 **CodeCatalysts Team**:
+- **Ruthwik**: Frontend kiosk interface development
 - **Vara Prasad**: Backend AI development & data pipeline
 - **Vishwak**: Celebrity data collection & analysis  
-- **Ruthwik**: Frontend kiosk interface development
 - **Satya Vishwas**: UI/UX design & user experience
 
 **Contest**: Fueled Contest 3.0 – Week 1  
