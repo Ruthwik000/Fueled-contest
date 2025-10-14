@@ -94,7 +94,7 @@ const ProductGrid = () => {
       {selectedCelebrity && (
         <div style={{
           position: 'relative',
-          height: windowWidth >= 1600 ? '450px' : windowWidth >= 1200 ? '400px' : windowWidth >= 768 ? '320px' : '240px',
+          height: windowWidth >= 1600 ? '550px' : windowWidth >= 1200 ? '500px' : windowWidth >= 768 ? '350px' : '240px',
           overflow: 'hidden',
           borderRadius: '16px',
           margin: windowWidth >= 1200 ? '20px 40px' : windowWidth >= 768 ? '16px 24px' : '12px 16px',
