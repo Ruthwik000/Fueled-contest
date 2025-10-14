@@ -1,11 +1,22 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import useAppStore from '../store/appStore';
 import { formatPrice } from '../utils/recommendationLogic';
 
 const ProductCard = ({ product, onClick }) => {
   const { wishlist, addToWishlist, removeFromWishlist } = useAppStore();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   
   const isInWishlist = wishlist.some(item => item.id === product.id);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
@@ -20,31 +31,101 @@ const ProductCard = ({ product, onClick }) => {
     <motion.div
       whileHover={{ y: -2 }}
       onClick={() => onClick(product)}
-      className="cursor-pointer group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+      style={{
+        cursor: 'pointer',
+        backgroundColor: 'white',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+        transition: 'all 0.3s ease',
+        maxWidth: windowWidth >= 1200 ? '320px' : windowWidth >= 768 ? '280px' : '100%',
+        width: '100%',
+        margin: '0 auto',
+        ':hover': {
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        }
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+      }}
     >
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div style={{
+        position: 'relative',
+        aspectRatio: '1',
+        overflow: 'hidden',
+        backgroundColor: '#f9fafb'
+      }}>
         <img 
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            transition: 'transform 0.3s ease'
+          }}
           onError={(e) => {
             e.target.src = '/images/placeholder-product.jpg';
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = 'scale(1)';
           }}
         />
         
         {/* Wishlist Button */}
         <button
           onClick={handleWishlistToggle}
-          className="absolute top-3 right-3 w-8 h-8 bg-white rounded-full shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center"
+          style={{
+            position: 'absolute',
+            top: windowWidth >= 768 ? '12px' : '8px',
+            right: windowWidth >= 768 ? '12px' : '8px',
+            width: windowWidth >= 768 ? '32px' : '28px',
+            height: windowWidth >= 768 ? '32px' : '28px',
+            backgroundColor: 'white',
+            borderRadius: '50%',
+            border: 'none',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
+          }}
         >
           <svg 
-            className={`w-4 h-4 transition-colors ${
-              isInWishlist ? 'text-red-500 fill-current' : 'text-gray-400 hover:text-red-500'
-            }`}
-            fill={isInWishlist ? 'currentColor' : 'none'}
-            stroke="currentColor" 
+            style={{
+              width: windowWidth >= 768 ? '16px' : '14px',
+              height: windowWidth >= 768 ? '16px' : '14px',
+              color: isInWishlist ? '#ef4444' : '#9ca3af',
+              fill: isInWishlist ? 'currentColor' : 'none',
+              stroke: 'currentColor',
+              transition: 'color 0.2s ease'
+            }}
             viewBox="0 0 24 24"
+            onMouseEnter={(e) => {
+              if (!isInWishlist) {
+                e.target.style.color = '#ef4444';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isInWishlist) {
+                e.target.style.color = '#9ca3af';
+              }
+            }}
           >
             <path 
               strokeLinecap="round" 
@@ -57,11 +138,26 @@ const ProductCard = ({ product, onClick }) => {
       </div>
 
       {/* Product Info */}
-      <div className="p-3 text-center">
-        <h3 className="font-normal text-gray-800 text-sm" style={{ marginBottom: '4px' }}>
+      <div style={{
+        padding: windowWidth >= 1200 ? '16px 12px' : windowWidth >= 768 ? '12px 8px' : '8px 6px',
+        textAlign: 'center'
+      }}>
+        <h3 style={{
+          fontWeight: 'normal',
+          color: '#1f2937',
+          fontSize: windowWidth >= 1200 ? '15px' : windowWidth >= 768 ? '14px' : '13px',
+          marginBottom: '4px',
+          lineHeight: '1.4',
+          margin: '0 0 4px 0'
+        }}>
           {product.name}
         </h3>
-        <p className="text-sm font-medium text-gray-600">
+        <p style={{
+          fontSize: windowWidth >= 1200 ? '14px' : windowWidth >= 768 ? '13px' : '12px',
+          fontWeight: '500',
+          color: '#4b5563',
+          margin: 0
+        }}>
           {formatPrice(product.price)}
         </p>
       </div>

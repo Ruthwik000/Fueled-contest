@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAppStore from '../store/appStore';
 
@@ -9,12 +10,22 @@ const Header = ({
   backTo = null
 }) => {
   const navigate = useNavigate();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { 
     toggleCart, 
     toggleWishlist, 
     cart, 
     wishlist 
   } = useAppStore();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleBack = () => {
     if (backTo) {
@@ -26,7 +37,15 @@ const Header = ({
 
   return (
     <div className="bg-white">
-      <div className={`flex items-center justify-between px-6 py-4 ${className}`}>
+      <div 
+        className={className}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: `${windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px'} 24px`
+        }}
+      >
         {/* Left side - Back button (conditional) */}
         <div className="flex items-center space-x-4">
           {showBackButton && (
@@ -43,7 +62,15 @@ const Header = ({
         </div>
 
         {/* Center - Logo */}
-        <img src="/images/logo.png" alt="EVOL" className="h-16" />
+        <img 
+          src="/images/logo.png" 
+          alt="EVOL" 
+          style={{
+            height: windowWidth >= 1200 ? '80px' : windowWidth >= 768 ? '72px' : '64px',
+            width: 'auto',
+            objectFit: 'contain'
+          }}
+        />
 
         {/* Right side - Wishlist and Cart icons (conditional) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>

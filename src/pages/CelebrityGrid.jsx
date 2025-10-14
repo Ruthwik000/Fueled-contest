@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import useAppStore from '../store/appStore';
@@ -8,7 +8,17 @@ import Header from '../components/Header';
 const CelebrityGrid = () => {
   const navigate = useNavigate();
   const [selectedCelebrity, setSelectedCelebrity] = useState(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { selectCelebrity } = useAppStore();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleCelebrityClick = (celebrity) => {
     setSelectedCelebrity(celebrity);
@@ -26,38 +36,60 @@ const CelebrityGrid = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-white"
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#ffffff'
+      }}
     >
       {/* Header */}
       <Header showBackButton={true} backTo="/survey" />
 
       <AnimatePresence mode="wait">
         {!selectedCelebrity ? (
-          /* Celebrity Selection View - Exact match to your image */
+          /* Celebrity Selection View - Responsive for all screens */
           <motion.div
             key="selection"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="px-6 py-12 max-w-4xl mx-auto"
+            style={{
+              padding: windowWidth >= 1200 ? '80px 40px' : windowWidth >= 768 ? '60px 24px' : '48px 24px',
+              maxWidth: windowWidth >= 1200 ? '1200px' : windowWidth >= 768 ? '900px' : '600px',
+              margin: '0 auto'
+            }}
           >
             {/* Title */}
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="text-center"
-              style={{ marginBottom: '168px' }}
+              style={{
+                textAlign: 'center',
+                marginBottom: window.innerWidth >= 1200 ? '120px' : window.innerWidth >= 768 ? '100px' : '80px'
+              }}
             >
-              <h2 className="text-2xl font-serif tracking-[0.2em] text-black font-normal">
+              <h2 style={{
+                fontSize: window.innerWidth >= 1200 ? '32px' : window.innerWidth >= 768 ? '28px' : '24px',
+                fontFamily: 'serif',
+                letterSpacing: '0.2em',
+                color: '#000000',
+                fontWeight: '400',
+                margin: 0
+              }}>
                 SELECT A CELEBRITY
               </h2>
             </motion.div>
 
-            {/* Celebrity Grid - 3 Column Layout */}
+            {/* Celebrity Grid - Responsive Layout */}
             <div
-              className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-2xl sm:max-w-3xl mx-auto px-4 sm:px-6"
-              style={{ marginBottom: '64px' }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: window.innerWidth >= 1200 ? 'repeat(3, 1fr)' : window.innerWidth >= 768 ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)',
+                gap: window.innerWidth >= 1200 ? '60px' : window.innerWidth >= 768 ? '40px' : '24px',
+                maxWidth: window.innerWidth >= 1200 ? '800px' : window.innerWidth >= 768 ? '600px' : '400px',
+                margin: '0 auto',
+                marginBottom: window.innerWidth >= 1200 ? '80px' : window.innerWidth >= 768 ? '60px' : '40px'
+              }}
             >
               {celebrities.slice(0, 3).map((celebrity, index) => (
                 <motion.div
@@ -70,22 +102,63 @@ const CelebrityGrid = () => {
                     delay: 0.2 + index * 0.1,
                     duration: 0.4
                   }}
-                  className="flex flex-col items-center cursor-pointer group"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    cursor: 'pointer'
+                  }}
                   onClick={() => handleCelebrityClick(celebrity)}
                 >
-                  <div className="relative w-32 h-32 rounded-full overflow-hidden mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <div style={{
+                    position: 'relative',
+                    width: window.innerWidth >= 1200 ? '160px' : window.innerWidth >= 768 ? '140px' : '120px',
+                    height: window.innerWidth >= 1200 ? '160px' : window.innerWidth >= 768 ? '140px' : '120px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    marginBottom: window.innerWidth >= 1200 ? '24px' : window.innerWidth >= 768 ? '20px' : '16px',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = '0 20px 40px -5px rgba(0, 0, 0, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.1)';
+                  }}
+                  >
                     <img
                       src={`${celebrity.image}?t=${Date.now()}`}
                       alt={celebrity.name}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s'
+                      }}
                       onLoad={() => console.log(`Loaded image for ${celebrity.name}: ${celebrity.image}`)}
                       onError={(e) => {
                         console.error(`Failed to load image for ${celebrity.name}: ${celebrity.image}`);
                         e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNjQiIHI9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjY0IiB5PSI2NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZCNzM4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiBmb250LXdlaWdodD0iNTAwIj5JbWFnZTwvdGV4dD4KPC9zdmc+Cg==';
                       }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'scale(1)';
+                      }}
                     />
                   </div>
-                  <h3 className="text-center text-sm font-serif text-black tracking-[0.15em] font-medium uppercase">
+                  <h3 style={{
+                    textAlign: 'center',
+                    fontSize: window.innerWidth >= 1200 ? '16px' : window.innerWidth >= 768 ? '14px' : '12px',
+                    fontFamily: 'serif',
+                    color: '#000000',
+                    letterSpacing: '0.15em',
+                    fontWeight: '500',
+                    textTransform: 'uppercase',
+                    margin: 0
+                  }}>
                     {celebrity.name}
                   </h3>
                 </motion.div>
@@ -97,35 +170,70 @@ const CelebrityGrid = () => {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="flex justify-center items-center px-4 sm:px-6 lg:px-8"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: window.innerWidth >= 1200 ? '0 60px' : window.innerWidth >= 768 ? '0 40px' : '0 24px'
+              }}
             >
-              <p className="text-sm sm:text-base lg:text-lg text-gray-600 text-center leading-relaxed font-normal max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl">
+              <p style={{
+                fontSize: window.innerWidth >= 1200 ? '18px' : window.innerWidth >= 768 ? '16px' : '14px',
+                color: '#6b7280',
+                textAlign: 'center',
+                lineHeight: '1.6',
+                fontWeight: '400',
+                maxWidth: window.innerWidth >= 1200 ? '600px' : window.innerWidth >= 768 ? '500px' : '350px',
+                margin: 0
+              }}>
                 Based on your preferences for elegant and timeless pieces, we've selected these celebrities who share your classic style.
               </p>
             </motion.div>
           </motion.div>
         ) : (
-          /* Celebrity Detail View - Centered on Page */
+          /* Celebrity Detail View - Responsive Centered Layout */
           <motion.div
             key="detail"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex items-center justify-center min-h-[calc(100vh-120px)] px-6 py-8"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 'calc(100vh - 120px)',
+              padding: window.innerWidth >= 1200 ? '60px 40px' : window.innerWidth >= 768 ? '40px 24px' : '32px 24px'
+            }}
           >
             {/* Celebrity Card */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="bg-gray-100 rounded-2xl overflow-hidden shadow-lg max-w-md w-full"
+              style={{
+                backgroundColor: '#f3f4f6',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+                maxWidth: window.innerWidth >= 1200 ? '500px' : window.innerWidth >= 768 ? '450px' : '400px',
+                width: '100%'
+              }}
             >
               {/* Celebrity Image */}
-              <div className="overflow-hidden rounded-t-2xl" style={{ height: '400px' }}>
+              <div style={{
+                overflow: 'hidden',
+                borderTopLeftRadius: '16px',
+                borderTopRightRadius: '16px',
+                height: window.innerWidth >= 1200 ? '500px' : window.innerWidth >= 768 ? '450px' : '400px'
+              }}>
                 <img
                   src={selectedCelebrity.image}
                   alt={selectedCelebrity.name}
-                  className="w-full h-full object-cover"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
+                  }}
                   onError={(e) => {
                     e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3MzgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSI1MDAiPkNlbGVicml0eSBJbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
                   }}
@@ -133,18 +241,32 @@ const CelebrityGrid = () => {
               </div>
 
               {/* Celebrity Info */}
-              <div className="px-8 text-center bg-white" style={{ paddingTop: '48px', paddingBottom: '56px' }}>
-                <h1 
-                  className="text-xl font-serif text-black tracking-[0.2em] uppercase font-normal"
-                  style={{ marginBottom: '32px' }}
-                >
+              <div style={{
+                padding: window.innerWidth >= 1200 ? '48px 40px 56px 40px' : window.innerWidth >= 768 ? '40px 32px 48px 32px' : '32px 24px 40px 24px',
+                textAlign: 'center',
+                backgroundColor: '#ffffff'
+              }}>
+                <h1 style={{
+                  fontSize: window.innerWidth >= 1200 ? '24px' : window.innerWidth >= 768 ? '22px' : '20px',
+                  fontFamily: 'serif',
+                  color: '#000000',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  fontWeight: '400',
+                  marginBottom: window.innerWidth >= 1200 ? '32px' : window.innerWidth >= 768 ? '28px' : '24px',
+                  margin: `0 0 ${window.innerWidth >= 1200 ? '32px' : window.innerWidth >= 768 ? '28px' : '24px'} 0`
+                }}>
                   {selectedCelebrity.name}
                 </h1>
 
-                <p 
-                  className="text-base text-gray-600 leading-relaxed px-4"
-                  style={{ marginBottom: '48px' }}
-                >
+                <p style={{
+                  fontSize: window.innerWidth >= 1200 ? '18px' : window.innerWidth >= 768 ? '16px' : '14px',
+                  color: '#6b7280',
+                  lineHeight: '1.6',
+                  padding: window.innerWidth >= 1200 ? '0 20px' : window.innerWidth >= 768 ? '0 16px' : '0 12px',
+                  marginBottom: window.innerWidth >= 1200 ? '48px' : window.innerWidth >= 768 ? '40px' : '32px',
+                  margin: `0 ${window.innerWidth >= 1200 ? '20px' : window.innerWidth >= 768 ? '16px' : '12px'} ${window.innerWidth >= 1200 ? '48px' : window.innerWidth >= 768 ? '40px' : '32px'} ${window.innerWidth >= 1200 ? '20px' : window.innerWidth >= 768 ? '16px' : '12px'}`
+                }}>
                   {selectedCelebrity.description}
                 </p>
 
@@ -153,12 +275,23 @@ const CelebrityGrid = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleConfirmCelebrity}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium tracking-[0.1em] transition-all duration-300"
                   style={{
-                    padding: '16px 40px',
+                    backgroundColor: '#eab308',
+                    color: 'white',
+                    fontSize: window.innerWidth >= 1200 ? '16px' : window.innerWidth >= 768 ? '15px' : '14px',
+                    fontWeight: '500',
+                    letterSpacing: '0.1em',
+                    padding: window.innerWidth >= 1200 ? '18px 48px' : window.innerWidth >= 768 ? '16px 40px' : '14px 32px',
                     borderRadius: '24px',
                     border: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#ca8a04';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#eab308';
                   }}
                 >
                   View Products

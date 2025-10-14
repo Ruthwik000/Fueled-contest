@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useAppStore from '../store/appStore';
 import { products } from '../mock/data';
 import { filterProductsByCategory, filterProductsByCelebrity } from '../utils/recommendationLogic';
@@ -19,6 +19,16 @@ const ProductGrid = () => {
   const [filterBy, setFilterBy] = useState('');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleProductSelect = (product) => {
     selectProduct(product);
@@ -68,7 +78,10 @@ const ProductGrid = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-white"
+      style={{
+        minHeight: '100vh',
+        backgroundColor: '#ffffff'
+      }}
       onClick={() => {
         setShowFilterDropdown(false);
         setShowSortDropdown(false);
@@ -79,19 +92,48 @@ const ProductGrid = () => {
 
       {/* Hero Section - Celebrity Photo Display */}
       {selectedCelebrity && (
-        <div className="relative h-68 overflow-hidden rounded-2xl mx-4 mt-4" style={{ marginBottom: '26px', marginTop: "16px", margin: "10px" }}>
+        <div style={{
+          position: 'relative',
+          height: windowWidth >= 1600 ? '450px' : windowWidth >= 1200 ? '400px' : windowWidth >= 768 ? '320px' : '240px',
+          overflow: 'hidden',
+          borderRadius: '16px',
+          margin: windowWidth >= 1200 ? '20px 40px' : windowWidth >= 768 ? '16px 24px' : '12px 16px',
+          marginBottom: windowWidth >= 768 ? '32px' : '24px'
+        }}>
           <img
             src={selectedCelebrity.image}
             alt={selectedCelebrity.name}
-            className="w-full h-full object-cover"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: windowWidth >= 1200 ? 'center top' : 'center'
+            }}
             onError={(e) => {
               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDQwMCAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMTkyIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjUwMCI+Q2VsZWJyaXR5IEltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+Cg==';
             }}
           />
-          <div className="absolute inset-0 bg-opacity-50 flex items-center justify-center">
-            <div className="text-center text-white" style={{ marginTop: "120px" }}>
-              <h1 className="text-xl font-serif font-bold tracking-[0.2em]">
-                INSPIRED BY {selectedCelebrity.name}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              textAlign: 'center',
+              color: 'white',
+              marginTop: windowWidth >= 1600 ? '100px' : windowWidth >= 1200 ? '90px' : windowWidth >= 768 ? '75px' : '50px'
+            }}>
+              <h1 style={{
+                fontSize: windowWidth >= 1200 ? '28px' : windowWidth >= 768 ? '24px' : '20px',
+                fontFamily: 'serif',
+                fontWeight: 'bold',
+                letterSpacing: '0.2em',
+                margin: 0
+              }}>
+                INSPIRED BY {selectedCelebrity.name.toUpperCase()}
               </h1>
             </div>
           </div>
@@ -100,9 +142,9 @@ const ProductGrid = () => {
 
       {/* Filter Bar */}
       <div style={{
-        padding: '16px 24px',
+        padding: windowWidth >= 1200 ? '20px 32px' : windowWidth >= 768 ? '16px 24px' : '12px 16px',
         backgroundColor: '#f9fafb',
-        margin: '0 16px 24px 16px',
+        margin: windowWidth >= 1200 ? '0 40px 32px 40px' : windowWidth >= 768 ? '0 24px 24px 24px' : '0 16px 20px 16px',
         borderRadius: '8px',
         position: 'relative'
       }}>
@@ -252,9 +294,11 @@ const ProductGrid = () => {
         </div>
       </div>
 
-      {/* Products Grid - 2 Column Layout */}
+      {/* Products Grid - Responsive Layout */}
       <div style={{
-        padding: '0 16px 32px 16px'
+        padding: windowWidth >= 1200 ? '0 40px 40px 40px' : windowWidth >= 768 ? '0 24px 32px 24px' : '0 16px 24px 16px',
+        maxWidth: windowWidth >= 1600 ? '1600px' : '100%',
+        margin: '0 auto'
       }}>
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -262,8 +306,12 @@ const ProductGrid = () => {
           transition={{ delay: 0.2 }}
           style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '16px'
+            gridTemplateColumns: windowWidth >= 1600 ? 'repeat(auto-fit, minmax(280px, 1fr))' : 
+                                windowWidth >= 1200 ? 'repeat(auto-fit, minmax(250px, 1fr))' : 
+                                windowWidth >= 768 ? 'repeat(auto-fit, minmax(200px, 1fr))' : 
+                                'repeat(2, 1fr)',
+            gap: windowWidth >= 1200 ? '24px' : windowWidth >= 768 ? '20px' : '16px',
+            justifyContent: 'center'
           }}
         >
           {filteredProducts.map((product, index) => (
