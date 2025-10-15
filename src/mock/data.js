@@ -120,58 +120,79 @@ export const products = [
 export const surveyQuestions = [
   {
     id: 1,
-    question: "What's the occasion? Let's find the perfect piece to celebrate.",
+    question: "1. How would you describe your overall style?",
     type: "single",
     options: [
-      "Everyday elegance",
-      "Special celebration",
-      "A gift for a special birthday",
-      "Professional occasions",
-      "Date night"
+      "Classic and timeless - I love pieces that never go out of style",
+      "Modern and minimal - Clean lines and understated elegance",
+      "Bold and statement-making - I want to stand out",
+      "Elegant and sophisticated - Refined with subtle luxury",
+      "Playful and eclectic - I like to mix and experiment",
+      "Romantic and delicate - Soft, feminine designs"
     ]
   },
   {
     id: 2,
-    question: "How would you describe your personal style?",
+    question: "2. What occasions are you shopping for? (Select multiple)",
     type: "multiple",
     options: [
-      "Classic & Timeless",
-      "Modern & Minimalist",
-      "Bohemian & Eclectic",
-      "Bold & Statement"
+      "Weddings",
+      "Engagement/Anniversary",
+      "Formal Events",
+      "Daily Wear",
+      "Office/Professional",
+      "Cocktail Parties",
+      "Special Celebrations",
+      "Casual Events"
     ]
   },
   {
     id: 3,
-    question: "Which precious metal calls to you?",
+    question: "3. What type of jewelry speaks to you most?",
     type: "single",
     options: [
-      "Gold",
-      "Silver",
-      "Platinum",
-      "Rose Gold"
+      "Solitaire diamonds - Simple and stunning",
+      "Multi-stone pieces - Intricate and detailed",
+      "Geometric designs - Modern and architectural",
+      "Nature-inspired - Floral, organic motifs",
+      "Vintage-inspired - Heritage and tradition",
+      "Contemporary art pieces - Unique and fashion-forward"
     ]
   },
   {
     id: 4,
-    question: "Are you drawn to any particular gemstones?",
+    question: "4. How much sparkle do you prefer?",
     type: "single",
     options: [
-      "Diamonds and Sapphires, please.",
-      "Emeralds and Rubies",
-      "Pearls and Opals",
-      "I prefer simple metals"
+      "Subtle sparkle - Just a hint of shine",
+      "Moderate sparkle - Noticeable but balanced",
+      "Maximum sparkle - I want all the brilliance",
+      "It depends on the occasion"
     ]
   },
   {
     id: 5,
-    question: "What is your desired budget for this special piece?",
+    question: "5. What's your budget range?",
     type: "single",
     options: [
-      "Under 50,000 INR",
-      "50,000 - 150,000 INR",
-      "150,000 - 500,000 INR",
-      "500,000+ INR"
+      "Under ₹50,000 (Accessible luxury)",
+      "₹50,000 - ₹1,50,000 (Premium)",
+      "₹1,50,000 - ₹3,00,000 (Luxury)",
+      "Above ₹3,00,000 (Ultra-luxury)"
     ]
+  },
+  {
+    id: 6,
+    question: "6. Any celebrity style inspirations? (Optional)",
+    type: "text",
+    isTextInput: true,
+    placeholder: "e.g., Elegant like Deepika Padukone"
+  },
+  {
+    id: 7,
+    question: "7. Any other preferences? (Optional)",
+    type: "text",
+    isTextInput: true,
+    placeholder: "Metal color, gemstone preferences, etc."
   }
 ];

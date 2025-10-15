@@ -21,13 +21,6 @@ const TerminalSurvey = () => {
   }, [currentQuestionIndex]);
 
   const getCurrentQuestion = () => {
-    if (currentQuestionIndex >= surveyQuestions.length) {
-      return {
-        question: "When you buy jewellery, what's the first thing you notice about it?",
-        type: "text",
-        isTextInput: true
-      };
-    }
     return surveyQuestions[currentQuestionIndex];
   };
 
@@ -68,7 +61,7 @@ const TerminalSurvey = () => {
     answerQuestion(currentQuestionIndex, answer);
     
     setTimeout(() => {
-      if (currentQuestionIndex >= surveyQuestions.length) {
+      if (currentQuestionIndex >= surveyQuestions.length - 1) {
         // Finish survey
         finishSurvey();
         navigate('/loading');
@@ -80,7 +73,7 @@ const TerminalSurvey = () => {
     }, 300);
   };
 
-  const totalQuestions = surveyQuestions.length + 1; // +1 for celebrity question
+  const totalQuestions = surveyQuestions.length;
   const currentQuestion = getCurrentQuestion();
   const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
@@ -203,7 +196,7 @@ const TerminalSurvey = () => {
                   type="text"
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
-                  placeholder="Type your message..."
+                  placeholder={currentQuestion.placeholder || "Type your message..."}
                   style={{
                     width: '100%',
                     padding: '16px 40px 16px 0',
@@ -240,26 +233,51 @@ const TerminalSurvey = () => {
                 </button>
               </div>
               
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => handleNext()}
-                disabled={!textInput.trim() || isProcessing}
-                style={{
-                  width: '100%',
-                  backgroundColor: !textInput.trim() || isProcessing ? '#d1d5db' : '#d97706',
-                  color: 'white',
-                  padding: '16px',
-                  borderRadius: '8px',
-                  fontWeight: '500',
-                  border: 'none',
-                  cursor: !textInput.trim() || isProcessing ? 'not-allowed' : 'pointer',
-                  fontSize: '16px',
-                  transition: 'all 0.2s'
-                }}
-              >
-                {isProcessing ? 'Processing...' : 'Next'}
-              </motion.button>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {currentQuestion.question.includes('(Optional)') && (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleNext()}
+                    disabled={isProcessing}
+                    style={{
+                      flex: 1,
+                      backgroundColor: isProcessing ? '#d1d5db' : '#e5e7eb',
+                      color: isProcessing ? '#9ca3af' : '#374151',
+                      padding: '16px',
+                      borderRadius: '8px',
+                      fontWeight: '500',
+                      border: 'none',
+                      cursor: isProcessing ? 'not-allowed' : 'pointer',
+                      fontSize: '16px',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Skip
+                  </motion.button>
+                )}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleNext()}
+                  disabled={(!textInput.trim() && !currentQuestion.question.includes('(Optional)')) || isProcessing}
+                  style={{
+                    flex: currentQuestion.question.includes('(Optional)') ? 1 : 'none',
+                    width: currentQuestion.question.includes('(Optional)') ? 'auto' : '100%',
+                    backgroundColor: ((!textInput.trim() && !currentQuestion.question.includes('(Optional)')) || isProcessing) ? '#d1d5db' : '#d97706',
+                    color: 'white',
+                    padding: '16px',
+                    borderRadius: '8px',
+                    fontWeight: '500',
+                    border: 'none',
+                    cursor: ((!textInput.trim() && !currentQuestion.question.includes('(Optional)')) || isProcessing) ? 'not-allowed' : 'pointer',
+                    fontSize: '16px',
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  {isProcessing ? 'Processing...' : 'Next'}
+                </motion.button>
+              </div>
             </motion.div>
           ) : (
             // Button Options
