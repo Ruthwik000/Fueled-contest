@@ -256,7 +256,7 @@ const CategoryGrid = () => {
                 overflow: 'hidden',
                 cursor: 'pointer'
               }}
-              onClick={() => handleCategorySelect("NECKLACE")}
+              onClick={() => handleCategorySelect("NECKLACES")}
             >
               <img
                 src="/images/necklace.png"

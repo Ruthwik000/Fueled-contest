@@ -2,7 +2,7 @@ import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import useAppStore from '../store/appStore';
-import { products } from '../mock/data';
+// Removed mock data import - using ML recommendations only
 import Header from '../components/Header';
 import { getEmailJSConfig } from '../utils/emailConfig';
 
@@ -13,7 +13,8 @@ const ProductDetail = () => {
     addToCart,
     addToWishlist,
     removeFromWishlist,
-    wishlist
+    wishlist,
+    recommendations
   } = useAppStore();
 
   const [selectedPurity, setSelectedPurity] = useState('14kt');
@@ -35,8 +36,16 @@ const ProductDetail = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Find product by ID from URL params
-  const selectedProduct = products.find(product => product.id === parseInt(id));
+  // Use ML recommendations only - no fallback to mock data
+  const allProducts = recommendations.products;
+  const productId = parseInt(id);
+  const selectedProduct = allProducts.find(product => 
+    product.id === productId || product.id === id || product.id === id.toString()
+  );
+  
+  console.log('🔍 ProductDetail - Looking for product ID:', id, 'parsed:', productId);
+  console.log('🔍 ProductDetail - Available products:', allProducts.map(p => ({ id: p.id, name: p.name })));
+  console.log('🔍 ProductDetail - Found product:', selectedProduct);
 
   if (!selectedProduct) {
     return <Navigate to="/products" replace />;

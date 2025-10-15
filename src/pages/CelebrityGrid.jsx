@@ -2,14 +2,21 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import useAppStore from '../store/appStore';
-import { celebrities } from '../mock/data';
+// Removed mock data import - using ML recommendations only
 import Header from '../components/Header';
 
 const CelebrityGrid = () => {
   const navigate = useNavigate();
   const [selectedCelebrity, setSelectedCelebrity] = useState(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const { selectCelebrity } = useAppStore();
+  const { selectCelebrity, recommendations } = useAppStore();
+
+  // Use ML recommendations only - no fallback to mock data
+  const celebritiesToShow = recommendations.celebrities;
+  
+  // Debug logging
+  console.log('🎭 CelebrityGrid - Recommendations:', recommendations);
+  console.log('🎭 CelebrityGrid - Celebrities to show:', celebritiesToShow);
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,6 +50,8 @@ const CelebrityGrid = () => {
     >
       {/* Header */}
       <Header showBackButton={true} backTo="/survey" />
+      
+      {/* Debug component removed */}
 
       <AnimatePresence mode="wait">
         {!selectedCelebrity ? (
@@ -91,7 +100,7 @@ const CelebrityGrid = () => {
                 marginBottom: window.innerWidth >= 1200 ? '80px' : window.innerWidth >= 768 ? '60px' : '40px'
               }}
             >
-              {celebrities.slice(0, 3).map((celebrity, index) => (
+              {celebritiesToShow && celebritiesToShow.length > 0 ? celebritiesToShow.slice(0, 3).map((celebrity, index) => (
                 <motion.div
                   key={celebrity.id}
                   initial={{ y: 20, opacity: 0 }}
@@ -112,11 +121,11 @@ const CelebrityGrid = () => {
                 >
                   <div style={{
                     position: 'relative',
-                    width: window.innerWidth >= 1200 ? '160px' : window.innerWidth >= 768 ? '140px' : '120px',
-                    height: window.innerWidth >= 1200 ? '160px' : window.innerWidth >= 768 ? '140px' : '120px',
+                    width: window.innerWidth >= 1600 ? '280px' : window.innerWidth >= 1200 ? '250px' : window.innerWidth >= 768 ? '200px' : '140px',
+                    height: window.innerWidth >= 1600 ? '280px' : window.innerWidth >= 1200 ? '250px' : window.innerWidth >= 768 ? '200px' : '140px',
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    marginBottom: window.innerWidth >= 1200 ? '24px' : window.innerWidth >= 768 ? '20px' : '16px',
+                    marginBottom: window.innerWidth >= 1600 ? '40px' : window.innerWidth >= 1200 ? '36px' : window.innerWidth >= 768 ? '28px' : '20px',
                     boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
                     transition: 'all 0.3s'
                   }}
@@ -151,7 +160,7 @@ const CelebrityGrid = () => {
                   </div>
                   <h3 style={{
                     textAlign: 'center',
-                    fontSize: window.innerWidth >= 1200 ? '16px' : window.innerWidth >= 768 ? '14px' : '12px',
+                    fontSize: window.innerWidth >= 1600 ? '24px' : window.innerWidth >= 1200 ? '22px' : window.innerWidth >= 768 ? '18px' : '14px',
                     fontFamily: 'serif',
                     color: '#000000',
                     letterSpacing: '0.15em',
@@ -162,7 +171,17 @@ const CelebrityGrid = () => {
                     {celebrity.name}
                   </h3>
                 </motion.div>
-              ))}
+              )) : (
+                <div style={{
+                  gridColumn: '1 / -1',
+                  textAlign: 'center',
+                  padding: '40px 20px',
+                  color: '#6b7280'
+                }}>
+                  <h3 style={{ marginBottom: '16px' }}>No celebrity recommendations available</h3>
+                  <p>Please complete the survey to get personalized recommendations.</p>
+                </div>
+              )}
             </div>
 
             {/* Description Text - Centered and Responsive */}

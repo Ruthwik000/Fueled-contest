@@ -13,6 +13,7 @@ import ProductDetail from './pages/ProductDetail';
 import Loader from './components/Loader';
 import CartModal from './components/CartModal';
 import WishlistModal from './components/WishlistModal';
+import MLApiTest from './components/MLApiTest';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/categories" element={<CategoryGrid />} />
             <Route path="/products" element={<ProductGrid />} />
             <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/test-ml" element={<MLApiTest />} />
 
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />

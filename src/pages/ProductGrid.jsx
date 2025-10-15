@@ -2,8 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useAppStore from '../store/appStore';
-import { products } from '../mock/data';
-import { filterProductsByCategory, filterProductsByCelebrity } from '../utils/recommendationLogic';
+// Removed unused imports - using ML recommendations only
 import ProductCard from '../components/ProductCard';
 import Header from '../components/Header';
 
@@ -12,7 +11,8 @@ const ProductGrid = () => {
   const {
     selectedCelebrity,
     selectedCategory,
-    selectProduct
+    selectProduct,
+    recommendations
   } = useAppStore();
 
   const [sortBy, setSortBy] = useState('');
@@ -31,16 +31,140 @@ const ProductGrid = () => {
   }, []);
 
   const handleProductSelect = (product) => {
+    console.log('🚀 ProductGrid - handleProductSelect called with:', product);
+    console.log('🚀 Product ID:', product.id, 'Type:', typeof product.id);
     selectProduct(product);
+    console.log('🚀 Navigating to:', `/product/${product.id}`);
     navigate(`/product/${product.id}`);
   };
 
-  // Apply filtering and sorting
-  let filteredProducts = [...products];
+  // Use ML recommendations only - no fallback to mock data
+  const productsToUse = recommendations.products;
+  
+  // Debug logging
+  console.log('💎 ProductGrid - Recommendations:', recommendations);
+  console.log('💎 ProductGrid - Products to use:', productsToUse);
+  console.log('💎 ProductGrid - Selected Category:', selectedCategory);
+  console.log('💎 ProductGrid - Filter By:', filterBy);
 
-  // Apply category filter
-  if (filterBy && filterBy !== 'All') {
-    filteredProducts = filteredProducts.filter(product => product.category === filterBy);
+  // Apply filtering and sorting
+  let filteredProducts = [...productsToUse];
+
+  // Category mapping to handle different naming conventions
+  const normalizeCategoryName = (category) => {
+    if (!category) return '';
+    
+    const normalized = category.toLowerCase().trim();
+    
+    // Map ML API categories to UI categories (using plural forms to match filter dropdown)
+    const categoryMap = {
+      // Necklaces (including chokers)
+      'necklace': 'NECKLACES',
+      'necklaces': 'NECKLACES',
+      'choker': 'NECKLACES',
+      'chokers': 'NECKLACES',
+      'neck piece': 'NECKLACES',
+      'neckpiece': 'NECKLACES',
+      'chain': 'NECKLACES',
+      'chains': 'NECKLACES',
+      
+      // Earrings
+      'earring': 'EARRINGS',
+      'earrings': 'EARRINGS',
+      'ear ring': 'EARRINGS',
+      'studs': 'EARRINGS',
+      'stud': 'EARRINGS',
+      'hoops': 'EARRINGS',
+      'hoop': 'EARRINGS',
+      'drops': 'EARRINGS',
+      'drop': 'EARRINGS',
+      'chandelier': 'EARRINGS',
+      
+      // Rings (exact match for ML API)
+      'ring': 'RINGS',
+      'rings': 'RINGS',
+      'band': 'RINGS',
+      'bands': 'RINGS',
+      'finger ring': 'RINGS',
+      'solitaire': 'RINGS',
+      'engagement ring': 'RINGS',
+      'wedding ring': 'RINGS',
+      
+      // Bracelets (exact match for ML API)
+      'bracelet': 'BRACELETS',
+      'bracelets': 'BRACELETS',
+      'bangle': 'BRACELETS',
+      'bangles': 'BRACELETS',
+      'wrist band': 'BRACELETS',
+      'wristband': 'BRACELETS',
+      'cuff': 'BRACELETS',
+      'cuffs': 'BRACELETS',
+      
+      // Pendants
+      'pendant': 'PENDANTS',
+      'pendants': 'PENDANTS',
+      'locket': 'PENDANTS',
+      'lockets': 'PENDANTS',
+      'charm': 'PENDANTS',
+      'charms': 'PENDANTS'
+    };
+    
+    const mapped = categoryMap[normalized];
+    if (!mapped) {
+      console.log('⚠️ Unknown category:', category, 'normalized:', normalized);
+      // Try to guess the category based on common patterns
+      if (normalized.includes('ear')) return 'EARRINGS';
+      if (normalized.includes('ring')) return 'RINGS';
+      if (normalized.includes('bracelet') || normalized.includes('bangle')) return 'BRACELETS';
+      if (normalized.includes('pendant') || normalized.includes('charm')) return 'PENDANTS';
+      if (normalized.includes('neck') || normalized.includes('chain')) return 'NECKLACES';
+      
+      return category.toUpperCase();
+    }
+    return mapped;
+  };
+
+  // Debug: Log all product categories before filtering
+  console.log('💎 All products with categories:', productsToUse.map(p => ({ 
+    name: p.name, 
+    rawCategory: p.category, 
+    normalized: normalizeCategoryName(p.category) 
+  })));
+  
+  // Debug: Count products by category
+  const categoryCount = {};
+  productsToUse.forEach(p => {
+    const normalized = normalizeCategoryName(p.category);
+    categoryCount[normalized] = (categoryCount[normalized] || 0) + 1;
+  });
+  console.log('💎 Products by category:', categoryCount);
+
+  // Apply category filter - prioritize selectedCategory from store over local filterBy
+  const categoryToFilter = selectedCategory || filterBy;
+  if (categoryToFilter && categoryToFilter !== 'All') {
+    console.log('💎 Filtering by category:', categoryToFilter);
+    console.log('💎 Total products before filter:', productsToUse.length);
+    
+    // Debug: Show what we're looking for
+    const normalizedFilter = normalizeCategoryName(categoryToFilter);
+    console.log('💎 Looking for normalized category:', normalizedFilter);
+    
+    filteredProducts = filteredProducts.filter(product => {
+      const productCategory = normalizeCategoryName(product.category);
+      const filterCategory = normalizedFilter;
+      const matches = productCategory === filterCategory;
+      
+      if (matches) {
+        console.log('✅ MATCH - Product:', product.name, 'Category:', product.category, '→', productCategory);
+      } else {
+        console.log('❌ NO MATCH - Product:', product.name, 'Category:', product.category, '→', productCategory, 'Expected:', filterCategory);
+      }
+      
+      return matches;
+    });
+    
+    console.log('💎 Total products after filter:', filteredProducts.length);
+    console.log('💎 Filtered products:', filteredProducts.map(p => ({ name: p.name, category: p.category })));
   }
 
   // Apply sorting
@@ -69,8 +193,15 @@ const ProductGrid = () => {
   };
 
   const handleFilterChange = (filterOption) => {
+    console.log('🔧 Filter changed to:', filterOption);
     setFilterBy(filterOption);
     setShowFilterDropdown(false);
+    
+    // If "All" is selected, clear the selected category from store
+    if (filterOption === 'All') {
+      // We could call viewAllProducts() here, but let's keep it simple
+      // and just use local state for manual filtering
+    }
   };
 
   return (
@@ -107,7 +238,7 @@ const ProductGrid = () => {
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              objectPosition: windowWidth >= 1200 ? 'center top' : 'center'
+              objectPosition: 'center 20%' // Position to show face better
             }}
             onError={(e) => {
               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDQwMCAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMTkyIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iOTYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9IjUwMCI+Q2VsZWJyaXR5IEltYWdlIE5vdCBGb3VuZDwvdGV4dD4KPC9zdmc+Cg==';
@@ -179,7 +310,7 @@ const ProductGrid = () => {
                 <span style={{
                   fontSize: '14px',
                   fontWeight: '500'
-                }}>Filter By {filterBy && `(${filterBy})`}</span>
+                }}>Filter By {(selectedCategory || filterBy) && `(${selectedCategory || filterBy})`}</span>
               </button>
               
               {showFilterDropdown && (
@@ -205,7 +336,7 @@ const ProductGrid = () => {
                         padding: '8px 12px',
                         textAlign: 'left',
                         border: 'none',
-                        background: filterBy === category ? '#f3f4f6' : 'transparent',
+                        background: (selectedCategory === category || filterBy === category) ? '#f3f4f6' : 'transparent',
                         cursor: 'pointer',
                         fontSize: '14px',
                         color: '#374151'
@@ -336,8 +467,13 @@ const ProductGrid = () => {
           }}>
             <p style={{
               color: '#6b7280',
-              fontSize: '18px'
-            }}>No products found matching your criteria.</p>
+              fontSize: '18px',
+              marginBottom: '16px'
+            }}>No personalized products available.</p>
+            <p style={{
+              color: '#9ca3af',
+              fontSize: '16px'
+            }}>Please complete the survey to get ML-powered recommendations.</p>
           </div>
         )}
       </div>

@@ -1,19 +1,58 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import useAppStore from '../store/appStore';
 import Header from './Header';
 
 const Loader = () => {
   const navigate = useNavigate();
+  const { 
+    isLoadingRecommendations, 
+    recommendationError, 
+    recommendations 
+  } = useAppStore();
+  
+  const [loadingMessage, setLoadingMessage] = useState('Analyzing your preferences...');
 
   useEffect(() => {
-    // Navigate to celebrities after 3 seconds
-    const timer = setTimeout(() => {
-      navigate('/celebrities');
-    }, 3000);
+    // Update loading messages
+    const messages = [
+      'Analyzing your preferences...',
+      'Finding celebrity matches...',
+      'Curating perfect jewelry pieces...',
+      'Almost ready...'
+    ];
+    
+    let messageIndex = 0;
+    const messageTimer = setInterval(() => {
+      messageIndex = (messageIndex + 1) % messages.length;
+      setLoadingMessage(messages[messageIndex]);
+    }, 1500);
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    return () => clearInterval(messageTimer);
+  }, []);
+
+  useEffect(() => {
+    // Handle navigation based on loading state
+    if (!isLoadingRecommendations) {
+      if (recommendationError) {
+        // Show error for 2 seconds then navigate to fallback
+        setTimeout(() => {
+          navigate('/celebrities');
+        }, 2000);
+      } else if (recommendations.celebrities.length > 0) {
+        // Success - navigate to celebrities
+        setTimeout(() => {
+          navigate('/celebrities');
+        }, 1000);
+      } else {
+        // No recommendations but no error - navigate after delay
+        setTimeout(() => {
+          navigate('/celebrities');
+        }, 3000);
+      }
+    }
+  }, [isLoadingRecommendations, recommendationError, recommendations, navigate]);
 
   return (
     <motion.div
@@ -91,22 +130,32 @@ const Loader = () => {
             <h2 style={{
               fontSize: '28px',
               fontFamily: 'serif',
-              color: '#1e293b',
+              color: recommendationError ? '#dc2626' : '#1e293b',
               marginBottom: '24px',
               lineHeight: '1.2',
               fontWeight: '400'
             }}>
-              Generating your personalized recommendations...
+              {recommendationError 
+                ? 'Oops! Something went wrong' 
+                : isLoadingRecommendations 
+                  ? 'Generating your personalized recommendations...'
+                  : 'Your recommendations are ready!'
+              }
             </h2>
             <p style={{
               fontSize: '18px',
-              color: '#64748b',
+              color: recommendationError ? '#dc2626' : '#64748b',
               maxWidth: '500px',
               margin: '0 auto',
               lineHeight: '1.6',
               fontWeight: '400'
             }}>
-              We're analyzing your preferences to find the perfect jewelry pieces that match your unique style.
+              {recommendationError 
+                ? `${recommendationError}. Don't worry, we'll show you our curated collection instead.`
+                : isLoadingRecommendations
+                  ? loadingMessage
+                  : `Found ${recommendations.celebrities.length} celebrity matches and ${recommendations.products.length} perfect pieces for you!`
+              }
             </p>
           </motion.div>
 

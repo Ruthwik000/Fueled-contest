@@ -20,6 +20,8 @@ const ProductCard = ({ product, onClick }) => {
 
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    console.log('❤️ Wishlist toggle clicked for:', product.name);
     if (isInWishlist) {
       removeFromWishlist(product.id);
     } else {
@@ -30,7 +32,11 @@ const ProductCard = ({ product, onClick }) => {
   return (
     <motion.div
       whileHover={{ y: -2 }}
-      onClick={() => onClick(product)}
+      onClick={() => {
+        console.log('🎯 ProductCard clicked:', product);
+        console.log('🎯 Product ID type:', typeof product.id, product.id);
+        onClick(product);
+      }}
       style={{
         cursor: 'pointer',
         backgroundColor: 'white',
@@ -70,7 +76,14 @@ const ProductCard = ({ product, onClick }) => {
             transition: 'transform 0.3s ease'
           }}
           onError={(e) => {
-            e.target.src = '/images/placeholder-product.jpg';
+            // Show a simple placeholder if ML API image fails
+            e.target.style.display = 'none';
+            e.target.parentElement.style.backgroundColor = '#f3f4f6';
+            e.target.parentElement.innerHTML = `
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #6b7280; font-size: 14px;">
+                Image from ML API
+              </div>
+            `;
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = 'scale(1.05)';

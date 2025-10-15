@@ -12,7 +12,7 @@ const TerminalSurvey = () => {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   
-  const { answerQuestion, finishSurvey } = useAppStore();
+  const { answerQuestion, finishSurvey, answers } = useAppStore();
 
   // Reset selections when question changes
   useEffect(() => {
@@ -60,11 +60,20 @@ const TerminalSurvey = () => {
     // Save answer
     answerQuestion(currentQuestionIndex, answer);
     
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestionIndex >= surveyQuestions.length - 1) {
-        // Finish survey
-        finishSurvey();
-        navigate('/loading');
+        // Finish survey and get ML recommendations
+        console.log('🎯 Survey completed! Answers:', answers);
+        try {
+          navigate('/loading');
+          console.log('📞 Calling finishSurvey...');
+          const result = await finishSurvey();
+          console.log('✅ Survey finished with result:', result);
+          // Navigation to results will be handled by the loading page
+        } catch (error) {
+          console.error('❌ Error completing survey:', error);
+          // Still navigate to loading page to show error state
+        }
       } else {
         // Next question
         setCurrentQuestionIndex(prev => prev + 1);
