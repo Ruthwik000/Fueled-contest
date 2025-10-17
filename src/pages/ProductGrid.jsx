@@ -40,7 +40,7 @@ const ProductGrid = () => {
 
   // Use ML recommendations only - no fallback to mock data
   const productsToUse = recommendations.products;
-  
+
   // Debug logging
   console.log('💎 ProductGrid - Recommendations:', recommendations);
   console.log('💎 ProductGrid - Products to use:', productsToUse);
@@ -53,9 +53,9 @@ const ProductGrid = () => {
   // Category mapping to handle different naming conventions
   const normalizeCategoryName = (category) => {
     if (!category) return '';
-    
+
     const normalized = category.toLowerCase().trim();
-    
+
     // Map ML API categories to UI categories (using plural forms to match filter dropdown)
     const categoryMap = {
       // Necklaces (including chokers)
@@ -67,7 +67,7 @@ const ProductGrid = () => {
       'neckpiece': 'NECKLACES',
       'chain': 'NECKLACES',
       'chains': 'NECKLACES',
-      
+
       // Earrings
       'earring': 'EARRINGS',
       'earrings': 'EARRINGS',
@@ -79,7 +79,7 @@ const ProductGrid = () => {
       'drops': 'EARRINGS',
       'drop': 'EARRINGS',
       'chandelier': 'EARRINGS',
-      
+
       // Rings (exact match for ML API)
       'ring': 'RINGS',
       'rings': 'RINGS',
@@ -89,7 +89,7 @@ const ProductGrid = () => {
       'solitaire': 'RINGS',
       'engagement ring': 'RINGS',
       'wedding ring': 'RINGS',
-      
+
       // Bracelets (exact match for ML API)
       'bracelet': 'BRACELETS',
       'bracelets': 'BRACELETS',
@@ -99,7 +99,7 @@ const ProductGrid = () => {
       'wristband': 'BRACELETS',
       'cuff': 'BRACELETS',
       'cuffs': 'BRACELETS',
-      
+
       // Pendants
       'pendant': 'PENDANTS',
       'pendants': 'PENDANTS',
@@ -108,7 +108,7 @@ const ProductGrid = () => {
       'charm': 'PENDANTS',
       'charms': 'PENDANTS'
     };
-    
+
     const mapped = categoryMap[normalized];
     if (!mapped) {
       console.log('⚠️ Unknown category:', category, 'normalized:', normalized);
@@ -118,19 +118,19 @@ const ProductGrid = () => {
       if (normalized.includes('bracelet') || normalized.includes('bangle')) return 'BRACELETS';
       if (normalized.includes('pendant') || normalized.includes('charm')) return 'PENDANTS';
       if (normalized.includes('neck') || normalized.includes('chain')) return 'NECKLACES';
-      
+
       return category.toUpperCase();
     }
     return mapped;
   };
 
   // Debug: Log all product categories before filtering
-  console.log('💎 All products with categories:', productsToUse.map(p => ({ 
-    name: p.name, 
-    rawCategory: p.category, 
-    normalized: normalizeCategoryName(p.category) 
+  console.log('💎 All products with categories:', productsToUse.map(p => ({
+    name: p.name,
+    rawCategory: p.category,
+    normalized: normalizeCategoryName(p.category)
   })));
-  
+
   // Debug: Count products by category
   const categoryCount = {};
   productsToUse.forEach(p => {
@@ -144,25 +144,25 @@ const ProductGrid = () => {
   if (categoryToFilter && categoryToFilter !== 'All') {
     console.log('💎 Filtering by category:', categoryToFilter);
     console.log('💎 Total products before filter:', productsToUse.length);
-    
+
     // Debug: Show what we're looking for
     const normalizedFilter = normalizeCategoryName(categoryToFilter);
     console.log('💎 Looking for normalized category:', normalizedFilter);
-    
+
     filteredProducts = filteredProducts.filter(product => {
       const productCategory = normalizeCategoryName(product.category);
       const filterCategory = normalizedFilter;
       const matches = productCategory === filterCategory;
-      
+
       if (matches) {
         console.log('✅ MATCH - Product:', product.name, 'Category:', product.category, '→', productCategory);
       } else {
         console.log('❌ NO MATCH - Product:', product.name, 'Category:', product.category, '→', productCategory, 'Expected:', filterCategory);
       }
-      
+
       return matches;
     });
-    
+
     console.log('💎 Total products after filter:', filteredProducts.length);
     console.log('💎 Filtered products:', filteredProducts.map(p => ({ name: p.name, category: p.category })));
   }
@@ -196,7 +196,7 @@ const ProductGrid = () => {
     console.log('🔧 Filter changed to:', filterOption);
     setFilterBy(filterOption);
     setShowFilterDropdown(false);
-    
+
     // If "All" is selected, clear the selected category from store
     if (filterOption === 'All') {
       // We could call viewAllProducts() here, but let's keep it simple
@@ -254,8 +254,8 @@ const ProductGrid = () => {
           }}>
             <div style={{
               textAlign: 'center',
-              color: 'white',
-              marginTop: windowWidth >= 1600 ? '100px' : windowWidth >= 1200 ? '90px' : windowWidth >= 768 ? '75px' : '50px'
+              color: 'rgba(255, 255, 255, 0.7)',
+              marginTop: windowWidth >= 1600 ? '230px' : windowWidth >= 1200 ? '210px' : windowWidth >= 768 ? '170px' : '140px'
             }}>
               <h1 style={{
                 fontSize: windowWidth >= 1200 ? '28px' : windowWidth >= 768 ? '24px' : '20px',
@@ -291,7 +291,7 @@ const ProductGrid = () => {
           }}>
             {/* Filter By Dropdown */}
             <div style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-              <button 
+              <button
                 onClick={() => setShowFilterDropdown(!showFilterDropdown)}
                 style={{
                   display: 'flex',
@@ -312,7 +312,7 @@ const ProductGrid = () => {
                   fontWeight: '500'
                 }}>Filter By {(selectedCategory || filterBy) && `(${selectedCategory || filterBy})`}</span>
               </button>
-              
+
               {showFilterDropdown && (
                 <div style={{
                   position: 'absolute',
@@ -351,7 +351,7 @@ const ProductGrid = () => {
 
             {/* Sort By Dropdown */}
             <div style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
-              <button 
+              <button
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
                 style={{
                   display: 'flex',
@@ -372,7 +372,7 @@ const ProductGrid = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              
+
               {showSortDropdown && (
                 <div style={{
                   position: 'absolute',
@@ -437,10 +437,10 @@ const ProductGrid = () => {
           transition={{ delay: 0.2 }}
           style={{
             display: 'grid',
-            gridTemplateColumns: windowWidth >= 1600 ? 'repeat(auto-fit, minmax(280px, 1fr))' : 
-                                windowWidth >= 1200 ? 'repeat(auto-fit, minmax(250px, 1fr))' : 
-                                windowWidth >= 768 ? 'repeat(auto-fit, minmax(200px, 1fr))' : 
-                                'repeat(2, 1fr)',
+            gridTemplateColumns: windowWidth >= 1600 ? 'repeat(auto-fit, minmax(280px, 1fr))' :
+              windowWidth >= 1200 ? 'repeat(auto-fit, minmax(250px, 1fr))' :
+                windowWidth >= 768 ? 'repeat(auto-fit, minmax(200px, 1fr))' :
+                  'repeat(2, 1fr)',
             gap: windowWidth >= 1200 ? '24px' : windowWidth >= 768 ? '20px' : '16px',
             justifyContent: 'center'
           }}

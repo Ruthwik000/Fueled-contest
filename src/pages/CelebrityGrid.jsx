@@ -13,6 +13,39 @@ const CelebrityGrid = () => {
 
   // Use ML recommendations only - no fallback to mock data
   const celebritiesToShow = recommendations.celebrities;
+
+  // Responsive calculations based on screen width - NO HORIZONTAL SCROLLING
+  const getResponsiveValues = () => {
+    const width = windowWidth;
+    
+    // Calculate circle size to fit exactly 3 celebrities with proper spacing
+    const containerPadding = Math.max(width * 0.08, 25); // More padding for better edge gap
+    const availableWidth = width - (containerPadding * 2); // Account for container padding
+    
+    // Further reduce gap percentage between circles
+    let gapPercentage = width < 400 ? 0.05 : 0.08; // Even smaller gaps between circles
+    
+    // Calculate optimal circle size to fit 3 celebrities with minimal gaps
+    const totalGapSpace = availableWidth * gapPercentage;
+    const circleSpace = availableWidth - totalGapSpace;
+    const baseCircleSize = Math.max(Math.min(circleSpace / 3, 280), width < 400 ? 80 : 90);
+    
+    // Calculate smaller gap between circles
+    const gap = Math.max((availableWidth - (baseCircleSize * 3)) / 2, width < 400 ? 5 : 8);
+    
+    return {
+      circleSize: baseCircleSize,
+      gap: gap,
+      fontSize: Math.max(Math.min(baseCircleSize * 0.1, 24), 10),
+      titleSize: Math.max(Math.min(width * 0.04, 32), 18),
+      descriptionSize: Math.max(Math.min(width * 0.025, 18), 12),
+      containerPadding: containerPadding,
+      marginBottom: Math.max(baseCircleSize * 0.25, 15), // Spacing between image and name
+      imageNameSpacing: Math.max(baseCircleSize * 0.15, 12) // Additional spacing between image and name
+    };
+  };
+
+  const responsive = getResponsiveValues();
   
   // Debug logging
   console.log('🎭 CelebrityGrid - Recommendations:', recommendations);
@@ -62,9 +95,15 @@ const CelebrityGrid = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             style={{
-              padding: windowWidth >= 1200 ? '80px 40px' : windowWidth >= 768 ? '60px 24px' : '48px 24px',
-              maxWidth: windowWidth >= 1200 ? '1200px' : windowWidth >= 768 ? '900px' : '600px',
-              margin: '0 auto'
+              padding: `${responsive.containerPadding * 2}px 0`,
+              width: '100%',
+              maxWidth: '100vw',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden'
             }}
           >
             {/* Title */}
@@ -73,31 +112,41 @@ const CelebrityGrid = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
               style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 textAlign: 'center',
-                marginBottom: window.innerWidth >= 1200 ? '120px' : window.innerWidth >= 768 ? '100px' : '80px'
+                width: '100%',
+                marginBottom: responsive.marginBottom * 3
               }}
             >
               <h2 style={{
-                fontSize: window.innerWidth >= 1200 ? '32px' : window.innerWidth >= 768 ? '28px' : '24px',
+                fontSize: `${responsive.titleSize}px`,
                 fontFamily: 'serif',
                 letterSpacing: '0.2em',
                 color: '#000000',
                 fontWeight: '400',
-                margin: 0
+                margin: 0,
+                textAlign: 'center'
               }}>
                 SELECT A CELEBRITY
               </h2>
             </motion.div>
 
-            {/* Celebrity Grid - Responsive Layout */}
+            {/* Celebrity Grid - Fully Responsive No Scroll */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: window.innerWidth >= 1200 ? 'repeat(3, 1fr)' : window.innerWidth >= 768 ? 'repeat(3, 1fr)' : 'repeat(3, 1fr)',
-                gap: window.innerWidth >= 1200 ? '60px' : window.innerWidth >= 768 ? '40px' : '24px',
-                maxWidth: window.innerWidth >= 1200 ? '800px' : window.innerWidth >= 768 ? '600px' : '400px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                gap: `${responsive.gap}px`,
+                width: '100%',
+                maxWidth: '100%',
                 margin: '0 auto',
-                marginBottom: window.innerWidth >= 1200 ? '80px' : window.innerWidth >= 768 ? '60px' : '40px'
+                marginBottom: responsive.marginBottom * 2,
+                padding: `0 ${responsive.containerPadding}px`,
+                overflow: 'visible'
               }}
             >
               {celebritiesToShow && celebritiesToShow.length > 0 ? celebritiesToShow.slice(0, 3).map((celebrity, index) => (
@@ -115,25 +164,35 @@ const CelebrityGrid = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    cursor: 'pointer'
+                    justifyContent: 'flex-start',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    flex: '0 0 auto',
+                    width: `${responsive.circleSize + 40}px`, // More width for full names
+                    minHeight: `${responsive.circleSize + responsive.imageNameSpacing * 3}px`, // Ensure space for wrapped text
+                    padding: '5px'
                   }}
                   onClick={() => handleCelebrityClick(celebrity)}
                 >
                   <div style={{
                     position: 'relative',
-                    width: window.innerWidth >= 1600 ? '280px' : window.innerWidth >= 1200 ? '250px' : window.innerWidth >= 768 ? '200px' : '140px',
-                    height: window.innerWidth >= 1600 ? '280px' : window.innerWidth >= 1200 ? '250px' : window.innerWidth >= 768 ? '200px' : '140px',
+                    width: `${responsive.circleSize}px`,
+                    height: `${responsive.circleSize}px`,
                     borderRadius: '50%',
                     overflow: 'hidden',
-                    marginBottom: window.innerWidth >= 1600 ? '40px' : window.innerWidth >= 1200 ? '36px' : window.innerWidth >= 768 ? '28px' : '20px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-                    transition: 'all 0.3s'
+                    marginBottom: `${responsive.imageNameSpacing}px`,
+                    boxShadow: '0 15px 35px -5px rgba(0, 0, 0, 0.15)',
+                    transition: 'all 0.3s ease-in-out',
+                    margin: '0 auto',
+                    flexShrink: 0
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = '0 20px 40px -5px rgba(0, 0, 0, 0.15)';
+                    e.currentTarget.style.boxShadow = '0 25px 50px -5px rgba(0, 0, 0, 0.25)';
+                    e.currentTarget.style.transform = 'translateY(-8px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.1)';
+                    e.currentTarget.style.boxShadow = '0 15px 35px -5px rgba(0, 0, 0, 0.15)';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                   >
                     <img
@@ -143,7 +202,7 @@ const CelebrityGrid = () => {
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        transition: 'transform 0.3s'
+                        transition: 'transform 0.3s ease-in-out'
                       }}
                       onLoad={() => console.log(`Loaded image for ${celebrity.name}: ${celebrity.image}`)}
                       onError={(e) => {
@@ -160,13 +219,21 @@ const CelebrityGrid = () => {
                   </div>
                   <h3 style={{
                     textAlign: 'center',
-                    fontSize: window.innerWidth >= 1600 ? '24px' : window.innerWidth >= 1200 ? '22px' : window.innerWidth >= 768 ? '18px' : '14px',
+                    fontSize: `${responsive.fontSize}px`,
                     fontFamily: 'serif',
                     color: '#000000',
-                    letterSpacing: '0.15em',
+                    letterSpacing: '0.1em',
                     fontWeight: '500',
                     textTransform: 'uppercase',
-                    margin: 0
+                    margin: 0,
+                    marginTop: `${responsive.imageNameSpacing}px`,
+                    lineHeight: '1.2',
+                    wordWrap: 'break-word',
+                    width: '100%',
+                    maxWidth: `${responsive.circleSize + 40}px`, // Allow more width for full names
+                    overflow: 'visible', // Show full text
+                    whiteSpace: 'normal', // Allow text wrapping
+                    textAlign: 'center'
                   }}>
                     {celebrity.name}
                   </h3>
@@ -193,17 +260,20 @@ const CelebrityGrid = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                padding: window.innerWidth >= 1200 ? '0 60px' : window.innerWidth >= 768 ? '0 40px' : '0 24px'
+                width: '100%',
+                textAlign: 'center',
+                padding: `0 ${responsive.containerPadding}px`,
+                marginTop: responsive.marginBottom
               }}
             >
               <p style={{
-                fontSize: window.innerWidth >= 1200 ? '18px' : window.innerWidth >= 768 ? '16px' : '14px',
+                fontSize: `${responsive.descriptionSize}px`,
                 color: '#6b7280',
                 textAlign: 'center',
                 lineHeight: '1.6',
                 fontWeight: '400',
-                maxWidth: window.innerWidth >= 1200 ? '600px' : window.innerWidth >= 768 ? '500px' : '350px',
-                margin: 0
+                maxWidth: Math.min(windowWidth * 0.8, 600),
+                margin: '0 auto'
               }}>
                 Based on your preferences for elegant and timeless pieces, we've selected these celebrities who share your classic style.
               </p>

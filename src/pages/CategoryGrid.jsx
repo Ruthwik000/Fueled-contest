@@ -126,17 +126,6 @@ const CategoryGrid = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s'
               }} />
-              <div style={{
-                position: 'absolute',
-                bottom: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                left: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                color: 'white',
-                fontSize: windowWidth >= 1200 ? '16px' : windowWidth >= 768 ? '14px' : '12px',
-                fontWeight: '500',
-                letterSpacing: '0.1em'
-              }}>
-                BRACELETS
-              </div>
             </motion.div>
 
             {/* Pendants */}
@@ -176,17 +165,6 @@ const CategoryGrid = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s'
               }} />
-              <div style={{
-                position: 'absolute',
-                bottom: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                left: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                color: 'white',
-                fontSize: windowWidth >= 1200 ? '16px' : windowWidth >= 768 ? '14px' : '12px',
-                fontWeight: '500',
-                letterSpacing: '0.1em'
-              }}>
-                PENDANTS
-              </div>
             </motion.div>
 
             {/* Rings */}
@@ -226,17 +204,6 @@ const CategoryGrid = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s'
               }} />
-              <div style={{
-                position: 'absolute',
-                bottom: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                left: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                color: 'white',
-                fontSize: windowWidth >= 1200 ? '16px' : windowWidth >= 768 ? '14px' : '12px',
-                fontWeight: '500',
-                letterSpacing: '0.1em'
-              }}>
-                RINGS
-              </div>
             </motion.div>
           </div>
 
@@ -283,17 +250,6 @@ const CategoryGrid = () => {
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 transition: 'all 0.3s'
               }} />
-              <div style={{
-                position: 'absolute',
-                bottom: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                left: windowWidth >= 1200 ? '20px' : windowWidth >= 768 ? '16px' : '12px',
-                color: 'white',
-                fontSize: windowWidth >= 1200 ? '16px' : windowWidth >= 768 ? '14px' : '12px',
-                fontWeight: '500',
-                letterSpacing: '0.1em'
-              }}>
-                NECKLACE
-              </div>
             </motion.div>
 
             {/* Earrings */}
