@@ -104,11 +104,15 @@ const CategoryGrid = () => {
               <img
                 src="/images/bracelets.png"
                 alt="Bracelets"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 style={{
                   width: '100%',
                   height: windowWidth >= 1200 ? '280px' : windowWidth >= 768 ? '240px' : '200px',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  backgroundColor: '#f3f4f6'
                 }}
                 onError={(e) => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDMwMCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTYwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjUwMCI+QlJBQ0VMRVRTIC0gSW1hZ2UgTm90IEZvdW5kPC90ZXh0Pgo8L3N2Zz4K';
@@ -143,11 +147,15 @@ const CategoryGrid = () => {
               <img
                 src="/images/pendant.png"
                 alt="Pendants"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 style={{
                   width: '100%',
                   height: windowWidth >= 1200 ? '280px' : windowWidth >= 768 ? '240px' : '200px',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  backgroundColor: '#f3f4f6'
                 }}
                 onError={(e) => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDMwMCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTYwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjUwMCI+UEVOREFOVFMGIC0gSW1hZ2UgTm90IEZvdW5kPC90ZXh0Pgo8L3N2Zz4K';
@@ -182,11 +190,15 @@ const CategoryGrid = () => {
               <img
                 src="/images/rings.png"
                 alt="Rings"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 style={{
                   width: '100%',
                   height: windowWidth >= 1200 ? '280px' : windowWidth >= 768 ? '240px' : '200px',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  backgroundColor: '#f3f4f6'
                 }}
                 onError={(e) => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDMwMCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTYwIiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjUwMCI+UklOR1MgLSBJbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
@@ -228,11 +240,15 @@ const CategoryGrid = () => {
               <img
                 src="/images/necklace.png"
                 alt="Necklace"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 style={{
                   width: '100%',
                   height: windowWidth >= 1200 ? '520px' : windowWidth >= 768 ? '420px' : '360px',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  backgroundColor: '#f3f4f6'
                 }}
                 onError={(e) => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwOCIgdmlld0JveD0iMCAwIDMwMCAyMDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjA4IiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iMTA0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3MzgwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI1MDAiPk5FQ0tMQUNFIC0gSW1hZ2UgTm90IEZvdW5kPC90ZXh0Pgo8L3N2Zz4K';
@@ -267,11 +283,15 @@ const CategoryGrid = () => {
               <img
                 src="/images/earring.png"
                 alt="Earrings"
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 style={{
                   width: '100%',
                   height: windowWidth >= 1200 ? '320px' : windowWidth >= 768 ? '260px' : '220px',
                   objectFit: 'cover',
-                  transition: 'transform 0.3s'
+                  transition: 'transform 0.3s',
+                  backgroundColor: '#f3f4f6'
                 }}
                 onError={(e) => {
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDMwMCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTI4IiBmaWxsPSIjRjNGNEY2Ii8+Cjx0ZXh0IHg9IjE1MCIgeT0iNjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjczODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9IjUwMCI+RUFSUKLOR1MgLSBJbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
